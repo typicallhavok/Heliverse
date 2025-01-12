@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--background: #181818;
+	--foreground: #e0e0e0;
+	--primary: #ff4456;
+	--primary-foreground: #ffffff;
+	--secondary: #313131;
+	--secondary-foreground: #bbbbbb;
+	--card: #1e1e1e;
+	--card-foreground: #e0e0e0;
+	--card-new: #333;
+	--muted: #888888;
+	--muted-foreground: #ffffff;
+	--accent: #d47fff;
+	--accent-foreground: #ffffff;
+	--border: #323232;
+	--input: #242424;
+	--ring: #ff4456;
+}
+
+html, body {
+	height: 100%;
+	overflow: hidden;
+  }
+
+body {
+	overflow-y: auto;
+	color: var(--foreground);
+	background: var(--background);
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.spinner {
+	width: 20px;
+	height: 20px;
+	border: 2px solid var(--primary);
+	border-top: 2px solid transparent;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+}
+
+input {
+	background-color: transparent;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+	-webkit-box-shadow: 0 0 0px 1000px rgb(var(--secondary)) inset;
+	-webkit-text-fill-color: rgb(var(--foreground));
+	transition: background-color 5000s ease-in-out 0s;
+}

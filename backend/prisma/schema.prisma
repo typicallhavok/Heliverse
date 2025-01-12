@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PantryStaff {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  contact       String
+  location      String
+  role          String
+  email         String   @unique
+  password      String
+  assignedTasks String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model DeliveryStaff {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Meals     Meals[]
+}
+
+model Patients {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  diseases         String[]
+  allergies        String[]
+  room             Int
+  bed              Int
+  floor            Int
+  age              Int
+  gender           Gender       @default(MALE)
+  contact          String
+  emergencyContact String
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  Meals            Meals[]
+  DietCharts       DietCharts[]
+  Alerts           Alerts[]
+}
+
+model Meals {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  patient         Patients       @relation(fields: [patientId], references: [id])
+  patientId       String         @db.ObjectId
+  deliveryStaff   DeliveryStaff  @relation(fields: [deliveryStaffId], references: [id])
+  deliveryStaffId String         @db.ObjectId
+  deliveryDate    DateTime
+  deliveryTime    DateTime
+  deliveryStatus  DeliveryStatus @default(PREPARATION)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Alerts {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String
+  message   String
+  patient   Patients @relation(fields: [patientId], references: [id])
+  patientId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DietCharts {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  breakfast Json
+  lunch     Json
+  dinner    Json
+  patient   Patients @relation(fields: [patientId], references: [id])
+  patientId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum DeliveryStatus {
+  PREPARATION
+  PENDING
+  DELIVERED
+  CANCELLED
+}
+
+enum Role {
+  ADMIN
+  KITCHEN_STAFF
+  DELIVERY_STAFF
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
