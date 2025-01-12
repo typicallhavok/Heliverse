@@ -7,6 +7,32 @@ const Navbar = () => {
     const pathname = usePathname();
     const { user, logout, loading } = useAuth();
 
+    const getNavLinks = () => {
+        if (!user) return [];
+
+        const links = [
+            { href: '/dashboard', label: 'Dashboard' },
+        ];
+
+        if (user.role === 'admin') {
+            links.push(
+                { href: '/pantry', label: 'Pantry' },
+                { href: '/pantry/tasks', label: 'Tasks' },
+                { href: '/patients', label: 'Patients' },
+                { href: '/deliveries', label: 'Deliveries' }
+            );
+        } else if (user.role === 'delivery') {
+            links.push({ href: '/deliveries', label: 'Deliveries' });
+        } else if (user.role === 'pantry') {
+            links.push(
+                { href: '/pantry/tasks', label: 'Tasks' },
+                { href: '/deliveries', label: 'Deliveries' }
+            );
+        }
+
+        return links;
+    };
+
     if (loading) {
         return <div className="h-16 bg-card border-b border-border" />;
     }
@@ -22,18 +48,15 @@ const Navbar = () => {
 
                         {user && (
                             <div className="hidden md:flex items-center space-x-4 ml-80">
-                                <NavLink href="/dashboard" active={pathname === '/dashboard'}>
-                                    Dashboard
-                                </NavLink>
-                                <NavLink href="/pantry" active={pathname === '/pantry'}>
-                                    Pantry
-                                </NavLink>
-                                <NavLink href="/patients" active={pathname === '/patients'}>
-                                    Patients
-                                </NavLink>
-                                <NavLink href="/deliveries" active={pathname === '/deliveries'}>
-                                    Deliveries
-                                </NavLink>
+                                {getNavLinks().map(link => (
+                                    <NavLink 
+                                        key={link.href}
+                                        href={link.href} 
+                                        active={pathname === link.href}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                ))}
                             </div>
                         )}
                     </div>

@@ -8,6 +8,7 @@ import { PatientsModule } from './patients/patients.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PantryModule } from './pantry/pantry.module';
+import { DeliveryModule } from './delivery/delivery.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { PantryModule } from './pantry/pantry.module';
     PatientsModule, 
     AlertsModule,
     DashboardModule,
-    PantryModule
+    PantryModule,
+    DeliveryModule
   ],
   controllers: [AppController],
   providers: [AppService],

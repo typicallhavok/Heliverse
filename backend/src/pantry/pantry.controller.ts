@@ -1,53 +1,41 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards } from '@nestjs/common';
 import { PantryService } from './pantry.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { DeliveryStatus } from '@prisma/client';
 
 @Controller('pantry')
 @UseGuards(AuthGuard)
 export class PantryController {
   constructor(private readonly pantryService: PantryService) {}
 
-  @Get('staff')
-  async getAllStaff() {
-    return this.pantryService.getAllStaff();
+  @Post('tasks')
+  async createMeal(@Body() mealData: { patientId: string }) {
+    return this.pantryService.createMeal(mealData);
   }
 
-  @Get('staff/:id')
-  async getStaffById(@Param('id') id: string) {
-    return this.pantryService.getStaffById(id);
+  @Get('tasks')
+  async getTasks() {
+    return this.pantryService.getTasks();
   }
 
-  @Post('staff')
-  async createStaff(@Body() staffData: any) {
-    return this.pantryService.createStaff(staffData);
+  @Get('delivery-staff')
+  async getDeliveryStaff() {
+    return this.pantryService.getDeliveryStaff();
   }
 
-  @Put('staff/:id')
-  async updateStaff(
+  @Patch('tasks/:id/status')
+  async updateTaskStatus(
     @Param('id') id: string,
-    @Body() staffData: any,
+    @Body('status') status: DeliveryStatus,
   ) {
-    return this.pantryService.updateStaff(id, staffData);
+    return this.pantryService.updateTaskStatus(id, status);
   }
 
-  @Delete('staff/:id')
-  async deleteStaff(@Param('id') id: string) {
-    return this.pantryService.deleteStaff(id);
-  }
-
-  @Post('staff/:id/tasks')
-  async addTask(
+  @Patch('tasks/:id/assign')
+  async assignDeliveryStaff(
     @Param('id') id: string,
-    @Body('task') task: string,
+    @Body('staffId') staffId: string,
   ) {
-    return this.pantryService.addTask(id, task);
-  }
-
-  @Delete('staff/:id/tasks/:taskIndex')
-  async removeTask(
-    @Param('id') id: string,
-    @Param('taskIndex') taskIndex: string,
-  ) {
-    return this.pantryService.removeTask(id, parseInt(taskIndex));
+    return this.pantryService.assignDeliveryStaff(id, staffId);
   }
 } 

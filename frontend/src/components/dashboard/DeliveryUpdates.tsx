@@ -1,19 +1,67 @@
-const DeliveryUpdates = () => {
-    return (
-        <div className="col-span-12 bg-card p-6 rounded-xl">
-            <h2 className="text-lg font-semibold mb-4">Delivery Updates</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-secondary/20 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                        <p className="font-medium">Room 302</p>
-                        <span className="text-sm text-green-500">Delivered</span>
-                    </div>
-                    <p className="text-sm text-muted">Lunch - Regular Diet</p>
-                    <p className="text-sm text-muted">Delivered at 12:15 PM</p>
-                </div>
-            </div>
-        </div>
-    );
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+type Update = {
+  id: string;
+  message: string;
+  timestamp: string;
+  type: "success" | "warning" | "info";
 };
 
-export default DeliveryUpdates; 
+const DeliveryUpdates = () => {
+  const [updates, setUpdates] = useState<Update[]>([]);
+
+  useEffect(() => {
+    const fetchUpdates = async () => {
+      try {
+        const { data } = await axios.get(
+          "http://localhost:3001/api/delivery-updates",
+          {
+            withCredentials: true,
+          }
+        );
+        setUpdates(data);
+      } catch (error) {
+        console.error("Failed to fetch updates:", error);
+      }
+    };
+    fetchUpdates();
+  }, []);
+
+  if (updates.length === 0) {
+    return (
+      <div className="col-span-12 bg-card p-6 rounded-xl">
+        <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
+        <p className="text-sm text-muted">No updates available</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="col-span-12 bg-card p-6 rounded-xl">
+      <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
+      <div className="space-y-4">
+        {updates.map((update) => (
+          <div
+            key={update.id}
+            className={`p-4 rounded-lg border ${
+              update.type === "success"
+                ? "bg-green-500/10 border-green-500/20"
+                : update.type === "warning"
+                ? "bg-yellow-500/10 border-yellow-500/20"
+                : "bg-blue-500/10 border-blue-500/20"
+            }`}
+          >
+            <p className="text-sm">{update.message}</p>
+            <p className="text-xs text-muted mt-1">
+              {new Date(update.timestamp).toLocaleTimeString()}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default DeliveryUpdates;
