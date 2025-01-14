@@ -33,7 +33,7 @@ export default function RootLayout({
           {!isHomePage && (
             <>
               <Navbar />
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[calc(100vh-9rem)] max-h-[calc(100vh-9rem)] mt-10">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[calc(100vh-9rem)] max-h-[calc(100vh-9rem)] mt-10 shadow-lg">
                 {children}
               </div>
             </>

@@ -22,7 +22,7 @@ export default function PatientsPage() {
 	useEffect(() => {
 		const fetchPatients = async () => {
 			try {
-				const { data } = await axios.get("http://localhost:3001/api/patients", {
+				const { data } = await axios.get(`${process.env.BACKEND_URL}/patients`, {
 					withCredentials: true,
 				});
 				setPatients(data);
@@ -38,7 +38,7 @@ export default function PatientsPage() {
 
 	const handleAddPatient = async (patientData: any) => {
 		try {
-			const { data } = await axios.post('http://localhost:3001/api/patients', 
+			const { data } = await axios.post(`${process.env.BACKEND_URL}/patients`, 
 				patientData,
 				{ withCredentials: true }
 			);

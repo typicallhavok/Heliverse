@@ -9,7 +9,7 @@ export class PantryController {
   constructor(private readonly pantryService: PantryService) {}
 
   @Post('tasks')
-  async createMeal(@Body() mealData: { patientId: string }) {
+  async createMeal(@Body() mealData: { patientId: string, mealName: string, mealType: string, pantryId: string }) {
     return this.pantryService.createMeal(mealData);
   }
 
@@ -17,10 +17,25 @@ export class PantryController {
   async getTasks() {
     return this.pantryService.getTasks();
   }
-
+  
   @Get('delivery-staff')
   async getDeliveryStaff() {
     return this.pantryService.getDeliveryStaff();
+  }
+
+  @Get("staff")
+  async getStaff() {
+    return this.pantryService.getStaff();
+  }
+
+  @Get("staff/:id")
+  async getStaffById(@Param("id") id: string) {
+    return this.pantryService.getStaffById(id);
+  }
+
+  @Post("staff/:id/tasks")
+  async createTask(@Param("id") id: string, @Body() taskData: { patientId: string, mealName: string, mealType: string, pantryId: string }) {
+    return this.pantryService.createTask(id, taskData);
   }
 
   @Patch('tasks/:id/status')

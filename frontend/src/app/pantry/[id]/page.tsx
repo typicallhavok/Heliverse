@@ -22,7 +22,7 @@ export default function PantryStaffDetails() {
   useEffect(() => {
     const fetchStaffMember = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:3001/api/pantry/staff/${params.id}`, {
+        const { data } = await axios.get(`${process.env.BACKEND_URL}/pantry/staff/${params.id}`, {
           withCredentials: true,
         });
         setStaff(data);
@@ -42,7 +42,7 @@ export default function PantryStaffDetails() {
 
     try {
       const { data } = await axios.post(
-        `http://localhost:3001/api/pantry/staff/${params.id}/tasks`,
+        `${process.env.BACKEND_URL}/pantry/staff/${params.id}/tasks`,
         { task: newTask },
         { withCredentials: true }
       );
@@ -56,7 +56,7 @@ export default function PantryStaffDetails() {
   const handleRemoveTask = async (taskIndex: number) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:3001/api/pantry/staff/${params.id}/tasks/${taskIndex}`,
+        `${process.env.BACKEND_URL}/pantry/staff/${params.id}/tasks/${taskIndex}`,
         { withCredentials: true }
       );
       setStaff(data);

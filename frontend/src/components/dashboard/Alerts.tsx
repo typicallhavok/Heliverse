@@ -20,7 +20,7 @@ const Alerts = () => {
     useEffect(() => {
         const fetchAlerts = async () => {
             try {
-                const { data } = await axios.get('http://localhost:3001/api/alerts', {
+                const { data } = await axios.get(`${process.env.BACKEND_URL}/alerts`, {
                     withCredentials: true
                 });
                 setAlerts(data);

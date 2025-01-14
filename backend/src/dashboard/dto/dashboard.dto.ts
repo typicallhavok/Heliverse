@@ -12,5 +12,11 @@ export class PantryMetricsDto {
   onTimeDeliveryRate: number;
   mealsToday: number;
   wastageRate: number;
-  specialDietsServed: number;
+  totalMealsDelivered: number;
+}
+
+export class DeliveryMetricsDto {
+  mealsDeliveredToday: number;
+  totalMealsDelivered: number;
+  pendingDeliveries: number;
 } 

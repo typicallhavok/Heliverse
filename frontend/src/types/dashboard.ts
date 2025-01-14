@@ -12,5 +12,5 @@ export interface PantryMetrics {
     onTimeDeliveryRate: number;
     mealsToday: number;
     wastageRate: number;
-    specialDietsServed: number;
+    totalMealsDelivered: number;
 } 

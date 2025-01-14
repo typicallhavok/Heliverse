@@ -23,16 +23,16 @@ model Admin {
 }
 
 model PantryStaff {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  contact       String
-  location      String
-  role          String
-  email         String   @unique
-  password      String
-  assignedTasks String[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  contact   String
+  location  String
+  role      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Meals     Meals[]
 }
 
 model DeliveryStaff {
@@ -66,13 +66,17 @@ model Patients {
 
 model Meals {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
   patient         Patients       @relation(fields: [patientId], references: [id])
   patientId       String         @db.ObjectId
   deliveryStaff   DeliveryStaff  @relation(fields: [deliveryStaffId], references: [id])
-  deliveryStaffId String         @db.ObjectId
+  deliveryStaffId String         @default("") @db.ObjectId
   deliveryDate    DateTime
   deliveryTime    DateTime
   deliveryStatus  DeliveryStatus @default(PREPARATION)
+  mealType        String
+  pantryStaff     PantryStaff    @relation(fields: [pantryStaffId], references: [id])
+  pantryStaffId   String         @db.ObjectId
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }
@@ -100,7 +104,7 @@ model DietCharts {
 
 enum DeliveryStatus {
   PREPARATION
-  PENDING
+  READY
   DELIVERED
   CANCELLED
 }

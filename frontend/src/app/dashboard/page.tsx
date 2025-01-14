@@ -2,6 +2,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import AdminDashboard from '@/components/dashboard/AdminDashboard';
 import PantryDashboard from '@/components/dashboard/PantryDashboard';
+import DeliveryDashboard from '@/components/dashboard/DeliveryDashboard';
 
 const Dashboard = () => {
     const { user, loading } = useAuth();
@@ -26,6 +27,7 @@ const Dashboard = () => {
 
             {user?.role === 'admin' && <AdminDashboard />}
             {user?.role === 'pantry' && <PantryDashboard />}
+            {user?.role === 'delivery' && <DeliveryDashboard />}
         </div>
     );
 };

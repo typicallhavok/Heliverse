@@ -16,7 +16,7 @@ const DeliveryUpdates = () => {
     const fetchUpdates = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:3001/api/delivery-updates",
+          `${process.env.BACKEND_URL}/delivery-updates`,
           {
             withCredentials: true,
           }

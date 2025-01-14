@@ -10,7 +10,7 @@ const PantryPerformance = () => {
     useEffect(() => {
         const fetchMetrics = async () => {
             try {
-                const { data } = await axios.get<PantryMetrics>('http://localhost:3001/api/dashboard/pantry-metrics', {
+                const { data } = await axios.get<PantryMetrics>(`${process.env.BACKEND_URL}/dashboard/pantry-metrics`, {
                     withCredentials: true
                 });
                 setMetrics(data);
@@ -50,8 +50,8 @@ const PantryPerformance = () => {
                         <p className="text-sm text-muted">Wastage Rate</p>
                     </div>
                     <div className="bg-secondary/20 p-4 rounded-lg">
-                        <p className="text-2xl font-bold">{metrics.specialDietsServed}</p>
-                        <p className="text-sm text-muted">Special Diets</p>
+                        <p className="text-2xl font-bold">{metrics.totalMealsDelivered}</p>
+                        <p className="text-sm text-muted">Total Meals</p>
                     </div>
                 </div>
             </div>

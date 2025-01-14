@@ -11,7 +11,7 @@ const DietCharts = () => {
         const fetchDietPlans = async () => {
             try {
 
-                const { data } = await axios.get<DietPlan[]>('http://localhost:3001/api/dashboard/diet-plans', {
+                const { data } = await axios.get<DietPlan[]>(`${process.env.BACKEND_URL}/dashboard/diet-plans`, {
                     withCredentials: true
                 });
                 setDietPlans(data);

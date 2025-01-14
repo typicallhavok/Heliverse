@@ -22,7 +22,7 @@ export default function PantryPage() {
     useEffect(() => {
         const fetchStaff = async () => {
             try {
-                const { data } = await axios.get("http://localhost:3001/api/pantry/staff", {
+                const { data } = await axios.get(`${process.env.BACKEND_URL}/pantry/staff`, {
                     withCredentials: true,
                 });
                 setStaff(data);
@@ -38,7 +38,7 @@ export default function PantryPage() {
 
     const handleAddStaff = async (staffData: any) => {
         try {
-            const { data } = await axios.post('http://localhost:3001/api/pantry/staff', 
+            const { data } = await axios.post(`${process.env.BACKEND_URL}/pantry/staff`, 
                 staffData,
                 { withCredentials: true }
             );
@@ -55,7 +55,7 @@ export default function PantryPage() {
         }
 
         try {
-            await axios.delete(`http://localhost:3001/api/pantry/staff/${id}`, {
+            await axios.delete(`${process.env.BACKEND_URL}/pantry/staff/${id}`, {
                 withCredentials: true
             });
             setStaff(staff.filter(member => member.id !== id));

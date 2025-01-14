@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Delivery = {
   id: string;
@@ -8,17 +9,22 @@ type Delivery = {
     name: string;
     room: number;
   };
+  patientId: JSON;
+  deliveryStatus: "PREPARATION" | "READY" | "DELIVERED";
   mealType: "BREAKFAST" | "LUNCH" | "DINNER";
-  deliveryStatus: "PREPARING" | "READY" | "DELIVERED";
   deliveryStaff?: {
     name: string;
   };
-  createdAt: string;
+  deliveryStaffId: string;
+  deliveryTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export default function DeliveriesPage() {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchDeliveries();
@@ -26,7 +32,7 @@ export default function DeliveriesPage() {
 
   const fetchDeliveries = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3001/api/deliveries", {
+      const { data } = await axios.get(`${process.env.BACKEND_URL}/deliveries`, {
         withCredentials: true,
       });
       setDeliveries(data);
@@ -39,11 +45,11 @@ export default function DeliveriesPage() {
 
   const updateDeliveryStatus = async (
     id: string,
-    status: "PREPARING" | "READY" | "DELIVERED"
+    status: "PREPARATION" | "READY" | "DELIVERED"
   ) => {
     try {
       const { data } = await axios.patch(
-        `http://localhost:3001/api/deliveries/${id}/status`,
+        `${process.env.BACKEND_URL}/pantry/tasks/${id}/status`,
         { status },
         { withCredentials: true }
       );
@@ -55,7 +61,7 @@ export default function DeliveriesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PREPARING":
+      case "PREPARATION":
         return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
       case "READY":
         return "bg-blue-500/10 text-blue-500 border-blue-500/20";
@@ -64,6 +70,60 @@ export default function DeliveriesPage() {
       default:
         return "bg-secondary/20 text-muted border-secondary/20";
     }
+  };
+
+  const getStatusButtons = (delivery: Delivery) => {
+    // If user is delivery staff, only show "Delivered" button
+    if (user?.role === 'delivery') {
+      return (
+        <button
+          onClick={() => updateDeliveryStatus(delivery.id, "DELIVERED")}
+          className={`flex-1 px-2 py-1 rounded text-xs ${
+            delivery.deliveryStatus === "DELIVERED"
+              ? "bg-green-500 text-white"
+              : "bg-green-500/10 text-green-500"
+          }`}
+        >
+          Delivered
+        </button>
+      );
+    }
+
+    // For admin/pantry roles, show all status buttons
+    return (
+      <div className="flex gap-2">
+        <button
+          onClick={() => updateDeliveryStatus(delivery.id, "PREPARATION")}
+          className={`flex-1 px-2 py-1 rounded text-xs ${
+            delivery.deliveryStatus === "PREPARATION"
+              ? "bg-yellow-500 text-white"
+              : "bg-yellow-500/10 text-yellow-500"
+          }`}
+        >
+          Preparing
+        </button>
+        <button
+          onClick={() => updateDeliveryStatus(delivery.id, "READY")}
+          className={`flex-1 px-2 py-1 rounded text-xs ${
+            delivery.deliveryStatus === "READY"
+              ? "bg-blue-500 text-white"
+              : "bg-blue-500/10 text-blue-500"
+          }`}
+        >
+          Ready
+        </button>
+        <button
+          onClick={() => updateDeliveryStatus(delivery.id, "DELIVERED")}
+          className={`flex-1 px-2 py-1 rounded text-xs ${
+            delivery.deliveryStatus === "DELIVERED"
+              ? "bg-green-500 text-white"
+              : "bg-green-500/10 text-green-500"
+          }`}
+        >
+          Delivered
+        </button>
+      </div>
+    );
   };
 
   if (loading) {
@@ -79,8 +139,8 @@ export default function DeliveriesPage() {
   if (deliveries.length === 0) {
     return (
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">No deliveries found</h1>
+        <div className="flex justify-center items-center">
+          <h1 className="text-4xl font-bold">No deliveries found</h1>
         </div>
       </div>
     );
@@ -95,7 +155,7 @@ export default function DeliveriesPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {["BREAKFAST", "LUNCH", "DINNER"].map((mealType) => (
           <div key={mealType} className="space-y-4">
-            <h2 className="text-lg font-semibold capitalize">
+            <h2 className="text-lg font-semibold capitalize text-center">
               {mealType.toLowerCase()}
             </h2>
             <div className="space-y-3">
@@ -127,44 +187,7 @@ export default function DeliveriesPage() {
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() =>
-                          updateDeliveryStatus(delivery.id, "PREPARING")
-                        }
-                        className={`flex-1 px-2 py-1 rounded text-xs ${
-                          delivery.deliveryStatus === "PREPARING"
-                            ? "bg-yellow-500 text-white"
-                            : "bg-yellow-500/10 text-yellow-500"
-                        }`}
-                      >
-                        Preparing
-                      </button>
-                      <button
-                        onClick={() =>
-                          updateDeliveryStatus(delivery.id, "READY")
-                        }
-                        className={`flex-1 px-2 py-1 rounded text-xs ${
-                          delivery.deliveryStatus === "READY"
-                            ? "bg-blue-500 text-white"
-                            : "bg-blue-500/10 text-blue-500"
-                        }`}
-                      >
-                        Ready
-                      </button>
-                      <button
-                        onClick={() =>
-                          updateDeliveryStatus(delivery.id, "DELIVERED")
-                        }
-                        className={`flex-1 px-2 py-1 rounded text-xs ${
-                          delivery.deliveryStatus === "DELIVERED"
-                            ? "bg-green-500 text-white"
-                            : "bg-green-500/10 text-green-500"
-                        }`}
-                      >
-                        Delivered
-                      </button>
-                    </div>
+                    {getStatusButtons(delivery)}
                   </div>
                 ))}
             </div>

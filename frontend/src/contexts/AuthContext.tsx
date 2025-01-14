@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const checkAuth = async () => {
         try {
-            const { data } = await axios.get('http://localhost:3001/api/auth/me', {
+            const { data } = await axios.get(`${process.env.BACKEND_URL}/auth/me`, {
                 withCredentials: true
             });
             setUser(data.user);
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const login = async (email: string, password: string, role: string) => {
-        const { data } = await axios.post('http://localhost:3001/api/auth/login', {
+        const { data } = await axios.post(`${process.env.BACKEND_URL}/auth/login`, {
             email,
             password,
             role
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const register = async (name: string, email: string, password: string, role: string) => {
-        const { data } = await axios.post('http://localhost:3001/api/auth/register', {
+        const { data } = await axios.post(`${process.env.BACKEND_URL}/auth/register`, {
             name,
             email,
             password,
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logout = async () => {
         try {
-            await axios.post('http://localhost:3001/api/auth/logout', {}, {
+            await axios.post(`${process.env.BACKEND_URL}/auth/logout`, {}, {
                 withCredentials: true
             });
             setUser(null);

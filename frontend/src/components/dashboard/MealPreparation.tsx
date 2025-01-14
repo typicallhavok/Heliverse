@@ -9,7 +9,7 @@ type Meal = {
     room: number;
   };
   mealType: 'BREAKFAST' | 'LUNCH' | 'DINNER';
-  deliveryStatus: 'PREPARING' | 'READY' | 'DELIVERED';
+  deliveryStatus: 'PREPARATION' | 'READY' | 'DELIVERED';
 };
 
 const MealPreparation = () => {
@@ -18,7 +18,7 @@ const MealPreparation = () => {
   useEffect(() => {
     const fetchMeals = async () => {
       try {
-        const { data } = await axios.get('http://localhost:3001/api/deliveries', {
+        const { data } = await axios.get(`${process.env.BACKEND_URL}/deliveries`, {
           withCredentials: true,
         });
         setMeals(data);
@@ -40,7 +40,7 @@ const MealPreparation = () => {
               {meals.filter((m) => m.mealType === type).length}
             </div>
             <div className="text-sm text-muted">
-              Preparing: {meals.filter((m) => m.mealType === type && m.deliveryStatus === 'PREPARING').length}
+              Preparing: {meals.filter((m) => m.mealType === type && m.deliveryStatus === 'PREPARATION').length}
               <br />
               Ready: {meals.filter((m) => m.mealType === type && m.deliveryStatus === 'READY').length}
               <br />

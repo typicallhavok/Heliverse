@@ -6,9 +6,8 @@ import { DeliveryStatus, Prisma } from '@prisma/client';
 export class PantryService {
   constructor(private prisma: PrismaService) {}
 
-  async createMeal(mealData: { patientId: string }) {
+  async createMeal(mealData: { patientId: string, mealName: string, mealType: string, pantryId: string }) {
     const now = new Date();
-    // First find an available staff member
     const availableStaff = await this.prisma.deliveryStaff.findFirst();
 
     if (!availableStaff) {
@@ -17,15 +16,22 @@ export class PantryService {
 
     return this.prisma.meals.create({
       data: {
+        name: mealData.mealName,
         patient: {
-          connect: { id: mealData.patientId }
+          connect: { id: mealData.patientId },
         },
         deliveryStaff: {
-          connect: { id: availableStaff.id }
+          connect: { id: availableStaff.id },
         },
         deliveryDate: now,
         deliveryTime: now,
         deliveryStatus: DeliveryStatus.PREPARATION,
+        mealType: mealData.mealType,
+        pantryStaff: {
+          connect: { id: mealData.pantryId },
+        },
+        
+        
       },
       include: {
         patient: {
@@ -66,11 +72,38 @@ export class PantryService {
     });
   }
 
+  async getStaff() {
+    return this.prisma.pantryStaff.findMany();
+  }
+
+  async getStaffById(id: string) {
+    return this.prisma.pantryStaff.findUnique({
+      where: { id },
+    });
+  }
+
+  async createTask(id: string, taskData: { patientId: string, mealName: string, mealType: string, pantryId: string }) {
+    const now = new Date();
+    return this.prisma.meals.create({
+      data: {
+        name: taskData.mealName,
+        patient: { connect: { id: taskData.patientId } },
+        deliveryStaff: { connect: { id } },
+        deliveryDate: now,
+        deliveryTime: now,
+        deliveryStatus: DeliveryStatus.PREPARATION,
+        mealType: taskData.mealType,
+        pantryStaff: { connect: { id: taskData.pantryId } },
+      },
+
+    });
+  }
+
   async updateTaskStatus(id: string, status: DeliveryStatus) {
     try {
       return await this.prisma.meals.update({
         where: { id },
-        data: { deliveryStatus: status },
+        data: { deliveryStatus: DeliveryStatus[status] },
         include: {
           patient: {
             select: {
@@ -87,6 +120,7 @@ export class PantryService {
         },
       });
     } catch (error) {
+      console.error('Update error:', error);
       throw new NotFoundException('Task not found');
     }
   }
@@ -97,7 +131,7 @@ export class PantryService {
         where: { id },
         data: {
           deliveryStaff: {
-            connect: { id: staffId }
+            connect: { id: staffId },
           },
           deliveryStatus: DeliveryStatus.PREPARATION,
         },
@@ -129,11 +163,11 @@ export class PantryService {
         Meals: {
           where: {
             deliveryStatus: {
-              not: DeliveryStatus.DELIVERED
-            }
-          }
-        }
-      }
+              not: DeliveryStatus.DELIVERED,
+            },
+          },
+        },
+      },
     });
   }
-} 
+}

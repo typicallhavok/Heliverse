@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { DietPlanDto, PantryMetricsDto } from './dto/dashboard.dto';
+import { DietPlanDto, PantryMetricsDto, DeliveryMetricsDto } from './dto/dashboard.dto';
 import { DeliveryStatus } from '@prisma/client';
 
 @Injectable()
@@ -71,6 +71,7 @@ export class DashboardService {
         deliveryDate: {
           gte: today,
         },
+        deliveryStatus: DeliveryStatus.DELIVERED,
       },
     });
 
@@ -90,16 +91,6 @@ export class DashboardService {
       },
     });
 
-    // Count special diets (patients with specific diseases or allergies)
-    const specialDiets = await this.prisma.patients.count({
-      where: {
-        OR: [
-          { diseases: { isEmpty: false } },
-          { allergies: { isEmpty: false } },
-        ],
-      },
-    });
-
     // Calculate wastage rate (cancelled meals)
     const cancelledMeals = await this.prisma.meals.count({
       where: {
@@ -114,7 +105,44 @@ export class DashboardService {
       onTimeDeliveryRate: totalDelivered > 0 ? (onTimeDeliveries / totalDelivered) * 100 : 0,
       mealsToday,
       wastageRate: Math.round(wastageRate * 10) / 10,
-      specialDietsServed: specialDiets,
+      totalMealsDelivered: totalDelivered,
+    };
+  }
+
+  async getDeliveryMetrics(userId: string): Promise<DeliveryMetricsDto> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const mealsDeliveredToday = await this.prisma.meals.count({
+      where: {
+        deliveryStaffId: userId,
+        deliveryDate: {
+          gte: today,
+        },
+        deliveryStatus: DeliveryStatus.DELIVERED,
+      },
+    });
+
+    const totalMealsDelivered = await this.prisma.meals.count({
+      where: {
+        deliveryStaffId: userId,
+        deliveryStatus: DeliveryStatus.DELIVERED,
+      },
+    });
+
+    const pendingDeliveries = await this.prisma.meals.count({
+      where: {
+        deliveryStaffId: userId,
+        deliveryStatus: {
+          not: DeliveryStatus.DELIVERED,
+        },
+      },
+    });
+
+    return {
+      mealsDeliveredToday,
+      totalMealsDelivered,
+      pendingDeliveries,
     };
   }
 } 

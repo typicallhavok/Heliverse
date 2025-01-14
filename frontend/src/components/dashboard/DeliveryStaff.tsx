@@ -16,7 +16,7 @@ const DeliveryStaff = () => {
     const fetchStaff = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:3001/api/delivery-staff/active",
+          `${process.env.BACKEND_URL}/delivery-staff/active`,
           {
             withCredentials: true,
           }

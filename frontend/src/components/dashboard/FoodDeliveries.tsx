@@ -25,7 +25,7 @@ const FoodDeliveries = () => {
 		const fetchDeliveries = async () => {
 			try {
 				const { data } = await axios.get(
-					"http://localhost:3001/api/deliveries",
+					`${process.env.BACKEND_URL}/deliveries`,
 					{
 						withCredentials: true,
 					}
@@ -39,6 +39,7 @@ const FoodDeliveries = () => {
 		};
 
 		fetchDeliveries();
+		console.log(deliveries);
 	}, []);
 
 	if (loading) {

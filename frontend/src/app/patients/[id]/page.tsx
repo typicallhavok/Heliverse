@@ -85,7 +85,7 @@ export default function PatientPage() {
 		const fetchPatient = async () => {
 			try {
 				const { data } = await axios.get(
-					`http://localhost:3001/api/patients/${params.id}`,
+					`${process.env.BACKEND_URL}/patients/${params.id}`,
 					{
 						withCredentials: true,
 					}
@@ -104,7 +104,7 @@ export default function PatientPage() {
 	const handleDelete = async () => {
 		if (window.confirm('Are you sure you want to remove this patient?')) {
 			try {
-				await axios.delete(`http://localhost:3001/api/patients/${params.id}`, {
+				await axios.delete(`${process.env.BACKEND_URL}/patients/${params.id}`, {
 					withCredentials: true
 				});
 				router.push('/patients');

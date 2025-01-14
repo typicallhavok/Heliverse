@@ -129,7 +129,6 @@ export class AuthService {
               contact: userData.contact || '',
               location: userData.location || 'Main Kitchen',
               role: userData.staffRole || 'Kitchen Staff',
-              assignedTasks: [],
             },
             select: {
               id: true,

@@ -24,7 +24,7 @@ const PatientDetails = () => {
 	useEffect(() => {
 		const fetchPatients = async () => {
 			try {
-				const { data } = await axios.get("http://localhost:3001/api/patients", {
+				const { data } = await axios.get(`${process.env.BACKEND_URL}/patients`, {
 					withCredentials: true,
 				});
 				setPatients(data);
