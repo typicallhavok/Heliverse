@@ -16,7 +16,7 @@ const DeliveryUpdates = () => {
     const fetchUpdates = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.BACKEND_URL}/delivery-updates`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/delivery-updates`,
           {
             withCredentials: true,
           }

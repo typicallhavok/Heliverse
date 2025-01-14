@@ -10,7 +10,7 @@ type PantryStaff = {
   contact: string;
   location: string;
   role: string;
-  assignedTasks: string[];
+  meals: string[];
 };
 
 export default function PantryStaffDetails() {
@@ -22,7 +22,7 @@ export default function PantryStaffDetails() {
   useEffect(() => {
     const fetchStaffMember = async () => {
       try {
-        const { data } = await axios.get(`${process.env.BACKEND_URL}/pantry/staff/${params.id}`, {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}`, {
           withCredentials: true,
         });
         setStaff(data);
@@ -42,7 +42,7 @@ export default function PantryStaffDetails() {
 
     try {
       const { data } = await axios.post(
-        `${process.env.BACKEND_URL}/pantry/staff/${params.id}/tasks`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}/tasks`,
         { task: newTask },
         { withCredentials: true }
       );
@@ -56,7 +56,7 @@ export default function PantryStaffDetails() {
   const handleRemoveTask = async (taskIndex: number) => {
     try {
       const { data } = await axios.delete(
-        `${process.env.BACKEND_URL}/pantry/staff/${params.id}/tasks/${taskIndex}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}/tasks/${taskIndex}`,
         { withCredentials: true }
       );
       setStaff(data);
@@ -88,48 +88,6 @@ export default function PantryStaffDetails() {
           <p className="text-muted">Contact: {staff.contact}</p>
           <p className="text-muted">Email: {staff.email}</p>
         </div>
-      </div>
-
-      <div className="bg-card p-6 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Assigned Tasks</h2>
-        
-        <form onSubmit={handleAddTask} className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
-            placeholder="Add new task..."
-            className="flex-1 p-2 rounded border bg-background"
-            required
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
-          >
-            Add Task
-          </button>
-        </form>
-
-        {staff.assignedTasks.length === 0 ? (
-          <p className="text-muted">No tasks assigned</p>
-        ) : (
-          <ul className="space-y-2">
-            {staff.assignedTasks.map((task, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center bg-secondary/20 p-3 rounded"
-              >
-                <span>{task}</span>
-                <button
-                  onClick={() => handleRemoveTask(index)}
-                  className="text-red-500 hover:text-red-600"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   );

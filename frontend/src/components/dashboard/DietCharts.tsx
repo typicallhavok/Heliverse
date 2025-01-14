@@ -11,7 +11,7 @@ const DietCharts = () => {
         const fetchDietPlans = async () => {
             try {
 
-                const { data } = await axios.get<DietPlan[]>(`${process.env.BACKEND_URL}/dashboard/diet-plans`, {
+                const { data } = await axios.get<DietPlan[]>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/diet-plans`, {
                     withCredentials: true
                 });
                 setDietPlans(data);
@@ -60,6 +60,7 @@ const DietCharts = () => {
                                 <p className="text-sm font-medium">Dinner:</p>
                                 <p className="text-sm text-muted">{plan.meals.dinner.join(", ")}</p>
                             </div>
+                            {error && <p className="text-red-500">{error}</p>}
                         </div>
                     </div>
                 ))}

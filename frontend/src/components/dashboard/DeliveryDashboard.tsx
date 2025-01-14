@@ -16,7 +16,7 @@ const DeliveryDashboard = () => {
     const fetchMetrics = async () => {
       try {
         const { data } = await axios.get<DeliveryMetrics>(
-          `${process.env.BACKEND_URL}/dashboard/delivery-metrics`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/delivery-metrics`,
           { withCredentials: true }
         );
         setMetrics(data);

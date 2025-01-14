@@ -22,11 +22,11 @@ export default function PatientsPage() {
 	useEffect(() => {
 		const fetchPatients = async () => {
 			try {
-				const { data } = await axios.get(`${process.env.BACKEND_URL}/patients`, {
+				const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patients`, {
 					withCredentials: true,
 				});
 				setPatients(data);
-			} catch (error) {
+			} catch (error: unknown) {
 				console.error("Failed to fetch patients:", error);
 			} finally {
 				setLoading(false);
@@ -36,15 +36,15 @@ export default function PatientsPage() {
 		fetchPatients();
 	}, []);
 
-	const handleAddPatient = async (patientData: any) => {
+	const handleAddPatient = async (patientData: Patient) => {
 		try {
-			const { data } = await axios.post(`${process.env.BACKEND_URL}/patients`, 
+			const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patients`, 
 				patientData,
 				{ withCredentials: true }
 			);
 			setPatients([...patients, data]);
 			setShowForm(false);
-		} catch (error) {
+		} catch (error: unknown) {
 			console.error('Failed to add patient:', error);
 		}
 	};

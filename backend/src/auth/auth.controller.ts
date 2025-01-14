@@ -23,13 +23,12 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await this.authService.validateUser(body.email, body.password);
-    
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const result = await this.authService.login(user);
-    
+
     res.cookie('jwt', result.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -42,11 +41,12 @@ export class AuthController {
 
   @Post('register')
   async register(
-    @Body() body: { email: string; password: string; name: string; role: string },
+    @Body()
+    body: { email: string; password: string; name: string; role: string },
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.register(body);
-    
+
     res.cookie('jwt', result.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

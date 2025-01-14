@@ -18,7 +18,7 @@ const MealPreparation = () => {
   useEffect(() => {
     const fetchMeals = async () => {
       try {
-        const { data } = await axios.get(`${process.env.BACKEND_URL}/deliveries`, {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/deliveries`, {
           withCredentials: true,
         });
         setMeals(data);

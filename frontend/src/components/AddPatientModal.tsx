@@ -1,10 +1,43 @@
 import { useState } from 'react';
 
-type Props = {
+type Patient = {
+    name: string;
+    room: number;
+    bed: number;
+    floor: number;
+    age: number;
+    gender: string;
+    diseases: string[];
+    allergies: string[];
+    contact: string;
+    emergencyContact: string;
+    dietChart: {
+      breakfast: {
+        items: string[];
+        calories: number;
+        restrictions: string;
+        nutrients: string;
+      };
+      lunch: {
+        items: string[];
+        calories: number;
+        restrictions: string;
+        nutrients: string;
+      };
+      dinner: {
+        items: string[];
+        calories: number;
+        restrictions: string;
+        nutrients: string;
+      };
+    };
+  };
+  
+  type Props = {
     show: boolean;
     onClose: () => void;
-    onSubmit: (patient: any) => void;
-};
+    onSubmit: (patient: Patient) => void;
+  };
 
 const inputClasses = "w-full p-2 rounded-md bg-secondary border border-gray-700 focus:border-primary focus:outline-none transition-colors placeholder:text-muted/50";
 const labelClasses = "absolute left-2 -top-2.5 px-1 text-xs transition-all bg-card text-muted";

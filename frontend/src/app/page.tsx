@@ -16,7 +16,7 @@ export default function Home() {
 						<p className="text-6xl font-bold text-muted">MANAGEMENT</p>
 					</div>
 					<p className="text-muted mt-8 text-base font-medium leading-relaxed">
-						Transform your hospital's food service into a seamless experience. 
+						Transform your hospital&apos;s food service into a seamless experience. 
 						Our intelligent system ensures every patient receives the perfect meal, 
 						right on time.
 					</p>

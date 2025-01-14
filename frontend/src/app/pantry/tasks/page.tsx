@@ -40,7 +40,7 @@ type Patient = {
 type DeliveryStaff = {
   id: string;
   name: string;
-  Meals: any[];
+  Meals: Meal[];
 };
 
 type Meal = {
@@ -87,7 +87,7 @@ export default function TasksPage() {
     const fetchPantries = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.BACKEND_URL}/pantry/staff`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff`
         );
         setPantries(data);
       } catch (error) {
@@ -100,14 +100,15 @@ export default function TasksPage() {
   const fetchData = async () => {
     try {
       const [patientsRes, staffRes, mealsRes] = await Promise.all([
-        axios.get(`${process.env.BACKEND_URL}/patients`),
-        axios.get(`${process.env.BACKEND_URL}/pantry/delivery-staff`),
-        axios.get(`${process.env.BACKEND_URL}/pantry/tasks`),
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patients`),
+        axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/delivery-staff`
+        ),
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/tasks`),
       ]);
       setPatients(patientsRes.data);
       setStaff(staffRes.data);
       setMeals(mealsRes.data);
-      console.log(mealsRes.data);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
@@ -129,7 +130,7 @@ export default function TasksPage() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${process.env.BACKEND_URL}/pantry/tasks`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/tasks`,
         {
           patientId: selectedPatient,
           mealType: selectedMealType,
@@ -151,7 +152,7 @@ export default function TasksPage() {
   const assignStaff = async (mealId: string, staffId: string) => {
     try {
       const { data } = await axios.patch(
-        `${process.env.BACKEND_URL}/pantry/tasks/${mealId}/assign`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/tasks/${mealId}/assign`,
         { staffId },
         { withCredentials: true }
       );
@@ -164,7 +165,7 @@ export default function TasksPage() {
   const updateStatus = async (mealId: string, status: DeliveryStatus) => {
     try {
       const { data } = await axios.patch(
-        `${process.env.BACKEND_URL}/pantry/tasks/${mealId}/status`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/tasks/${mealId}/status`,
         { status },
         { withCredentials: true }
       );
@@ -175,8 +176,6 @@ export default function TasksPage() {
   };
 
   if (loading) return <div className="spinner" />;
-
-  if (meals.length === 0) return <div className="text-center text-4xl font-bold">No meals found</div>;
 
   return (
     <div className="space-y-6 p-6">
@@ -322,144 +321,148 @@ export default function TasksPage() {
           </div>
         </>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {["BREAKFAST", "LUNCH", "DINNER"].map((type) => (
-          <div key={type} className="space-y-4">
-            <h2 className="text-lg font-semibold">{type}</h2>
-            <div className="space-y-4">
-              {meals
-                .filter((meal) => meal.mealType === type)
-                .map((meal) => (
-                  <div
-                    key={meal.id}
-                    className="bg-card p-4 rounded-lg space-y-3"
-                  >
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium">{meal.name}</p>
-                          <p className="text-sm text-muted">
-                            Room {meal.patient.room}
-                          </p>
+      {meals.length === 0 && (
+        <div className="text-center text-4xl font-bold">No meals found</div>
+      )}
+      {meals.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {["BREAKFAST", "LUNCH", "DINNER"].map((type) => (
+            <div key={type} className="space-y-4">
+              <h2 className="text-lg font-semibold">{type}</h2>
+              <div className="space-y-4">
+                {meals
+                  .filter((meal) => meal.mealType === type)
+                  .map((meal) => (
+                    <div
+                      key={meal.id}
+                      className="bg-card p-4 rounded-lg space-y-3"
+                    >
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-medium">{meal.name}</p>
+                            <p className="text-sm text-muted">
+                              Room {meal.patient.room}
+                            </p>
+                          </div>
+                          <span className="text-sm text-muted">
+                            {new Date(meal.deliveryTime).toLocaleTimeString()}
+                          </span>
                         </div>
-                        <span className="text-sm text-muted">
-                          {new Date(meal.deliveryTime).toLocaleTimeString()}
-                        </span>
-                      </div>
 
-                      <div className="mt-2 space-y-1">
-                        <p className="text-sm">
-                          <span className="font-medium">Patient: </span>
-                          {meal.patient.name}
-                        </p>
-                        <p className="text-sm">
-                          <span className="font-medium">Pantry: </span>
-                          {
-                            pantries.find(
-                              (pantry) => pantry.id === meal.pantryStaffId
-                            )?.name
-                          }
-                        </p>
-                        {meal.deliveryStaff && (
+                        <div className="mt-2 space-y-1">
                           <p className="text-sm">
-                            <span className="font-medium">Delivery: </span>
-                            {meal.deliveryStaff.name}
+                            <span className="font-medium">Patient: </span>
+                            {meal.patient.name}
                           </p>
-                        )}
+                          <p className="text-sm">
+                            <span className="font-medium">Pantry: </span>
+                            {
+                              pantries.find(
+                                (pantry) => pantry.id === meal.pantryStaffId
+                              )?.name
+                            }
+                          </p>
+                          {meal.deliveryStaff && (
+                            <p className="text-sm">
+                              <span className="font-medium">Delivery: </span>
+                              {meal.deliveryStaff.name}
+                            </p>
+                          )}
+                        </div>
+
+                        {patients
+                          .find((patient) => patient.id === meal.patientId)
+                          ?.DietCharts.map((chart, idx) =>
+                            selectedMealType === "BREAKFAST" ? (
+                              <div key={idx} className="text-sm space-y-1 mb-2">
+                                <p className="font-medium">
+                                  Calories: {chart.breakfast.calories}
+                                </p>
+                                {chart.breakfast.restrictions.length > 0 && (
+                                  <p className="text-red-500 text-xs">
+                                    Restrictions: {chart.breakfast.restrictions}
+                                  </p>
+                                )}
+                                {chart.breakfast.nutrients.length > 0 && (
+                                  <p className="text-green-500 text-xs">
+                                    Preferences: {chart.breakfast.nutrients}
+                                  </p>
+                                )}
+                              </div>
+                            ) : selectedMealType === "LUNCH" ? (
+                              <div key={idx} className="text-sm space-y-1 mb-2">
+                                <p className="font-medium">
+                                  Calories: {chart.lunch.calories}
+                                </p>
+                                {chart.lunch.restrictions.length > 0 && (
+                                  <p className="text-red-500 text-xs">
+                                    Restrictions: {chart.lunch.restrictions}
+                                  </p>
+                                )}
+                                {chart.lunch.nutrients.length > 0 && (
+                                  <p className="text-green-500 text-xs">
+                                    Preferences: {chart.lunch.nutrients}
+                                  </p>
+                                )}
+                              </div>
+                            ) : selectedMealType === "DINNER" ? (
+                              <div key={idx} className="text-sm space-y-1 mb-2">
+                                <p className="font-medium">
+                                  Calories: {chart.dinner.calories}
+                                </p>
+                                {chart.dinner.restrictions.length > 0 && (
+                                  <p className="text-red-500 text-xs">
+                                    Restrictions: {chart.dinner.restrictions}
+                                  </p>
+                                )}
+                                {chart.dinner.nutrients.length > 0 && (
+                                  <p className="text-green-500 text-xs">
+                                    Preferences: {chart.dinner.nutrients}
+                                  </p>
+                                )}
+                              </div>
+                            ) : null
+                          )}
                       </div>
 
-                      {patients
-                        .find((patient) => patient.id === meal.patientId)
-                        ?.DietCharts.map((chart, idx) =>
-                          selectedMealType === "BREAKFAST" ? (
-                            <div key={idx} className="text-sm space-y-1 mb-2">
-                              <p className="font-medium">
-                                Calories: {chart.breakfast.calories}
-                              </p>
-                              {chart.breakfast.restrictions.length > 0 && (
-                                <p className="text-red-500 text-xs">
-                                  Restrictions: {chart.breakfast.restrictions}
-                                </p>
-                              )}
-                              {chart.breakfast.nutrients.length > 0 && (
-                                <p className="text-green-500 text-xs">
-                                  Preferences: {chart.breakfast.nutrients}
-                                </p>
-                              )}
-                            </div>
-                          ) : selectedMealType === "LUNCH" ? (
-                            <div key={idx} className="text-sm space-y-1 mb-2">
-                              <p className="font-medium">
-                                Calories: {chart.lunch.calories}
-                              </p>
-                              {chart.lunch.restrictions.length > 0 && (
-                                <p className="text-red-500 text-xs">
-                                  Restrictions: {chart.lunch.restrictions}
-                                </p>
-                              )}
-                              {chart.lunch.nutrients.length > 0 && (
-                                <p className="text-green-500 text-xs">
-                                  Preferences: {chart.lunch.nutrients}
-                                </p>
-                              )}
-                            </div>
-                          ) : selectedMealType === "DINNER" ? (
-                            <div key={idx} className="text-sm space-y-1 mb-2">
-                              <p className="font-medium">
-                                Calories: {chart.dinner.calories}
-                              </p>
-                              {chart.dinner.restrictions.length > 0 && (
-                                <p className="text-red-500 text-xs">
-                                  Restrictions: {chart.dinner.restrictions}
-                                </p>
-                              )}
-                              {chart.dinner.nutrients.length > 0 && (
-                                <p className="text-green-500 text-xs">
-                                  Preferences: {chart.dinner.nutrients}
-                                </p>
-                              )}
-                            </div>
-                          ) : null
-                        )}
-                    </div>
+                      <div className="space-y-2">
+                        <select
+                          value={meal.deliveryStaff?.id || ""}
+                          onChange={(e) => assignStaff(meal.id, e.target.value)}
+                          className="w-full p-2 text-sm rounded border bg-background"
+                        >
+                          <option value="">Assign Staff</option>
+                          {staff.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.name}
+                            </option>
+                          ))}
+                        </select>
 
-                    <div className="space-y-2">
-                      <select
-                        value={meal.deliveryStaff?.id || ""}
-                        onChange={(e) => assignStaff(meal.id, e.target.value)}
-                        className="w-full p-2 text-sm rounded border bg-background"
-                      >
-                        <option value="">Assign Staff</option>
-                        {staff.map((s) => (
-                          <option key={s.id} value={s.id}>
-                            {s.name}
-                          </option>
-                        ))}
-                      </select>
-
-                      <div className="flex gap-2">
-                        {Object.values(DeliveryStatus).map((status) => (
-                          <button
-                            key={status}
-                            onClick={() => updateStatus(meal.id, status)}
-                            className={`flex-1 px-2 py-1 rounded text-xs ${
-                              meal.deliveryStatus === status
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-secondary text-secondary-foreground"
-                            }`}
-                          >
-                            {status}
-                          </button>
-                        ))}
+                        <div className="flex gap-2">
+                          {Object.values(DeliveryStatus).map((status) => (
+                            <button
+                              key={status}
+                              onClick={() => updateStatus(meal.id, status)}
+                              className={`flex-1 px-2 py-1 rounded text-xs ${
+                                meal.deliveryStatus === status
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-secondary text-secondary-foreground"
+                              }`}
+                            >
+                              {status}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

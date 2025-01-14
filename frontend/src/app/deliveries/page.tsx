@@ -32,7 +32,7 @@ export default function DeliveriesPage() {
 
   const fetchDeliveries = async () => {
     try {
-      const { data } = await axios.get(`${process.env.BACKEND_URL}/deliveries`, {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/deliveries`, {
         withCredentials: true,
       });
       setDeliveries(data);
@@ -49,7 +49,7 @@ export default function DeliveriesPage() {
   ) => {
     try {
       const { data } = await axios.patch(
-        `${process.env.BACKEND_URL}/pantry/tasks/${id}/status`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/tasks/${id}/status`,
         { status },
         { withCredentials: true }
       );

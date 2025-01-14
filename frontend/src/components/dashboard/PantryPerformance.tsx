@@ -10,7 +10,7 @@ const PantryPerformance = () => {
     useEffect(() => {
         const fetchMetrics = async () => {
             try {
-                const { data } = await axios.get<PantryMetrics>(`${process.env.BACKEND_URL}/dashboard/pantry-metrics`, {
+                const { data } = await axios.get<PantryMetrics>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/pantry-metrics`, {
                     withCredentials: true
                 });
                 setMetrics(data);

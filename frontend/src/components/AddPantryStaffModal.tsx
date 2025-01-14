@@ -1,10 +1,19 @@
 "use client";
 import { useState } from 'react';
 
+type PantryStaffForm = {
+    name: string;
+    email: string;
+    password: string;
+    contact: string;
+    location: string;
+    role: string;
+};
+
 type AddPantryStaffModalProps = {
     show: boolean;
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: PantryStaffForm) => void;
 };
 
 const AddPantryStaffModal = ({ show, onClose, onSubmit }: AddPantryStaffModalProps) => {
@@ -14,7 +23,7 @@ const AddPantryStaffModal = ({ show, onClose, onSubmit }: AddPantryStaffModalPro
         password: '',
         contact: '',
         location: '',
-        role: 'Kitchen Staff', // Default role
+        role: 'Kitchen Staff',
     });
 
     const [showPassword, setShowPassword] = useState(false);
