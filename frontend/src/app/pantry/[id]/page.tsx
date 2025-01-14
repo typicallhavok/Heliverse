@@ -16,7 +16,7 @@ type PantryStaff = {
 export default function PantryStaffDetails() {
   const params = useParams();
   const [staff, setStaff] = useState<PantryStaff | null>(null);
-  const [newTask, setNewTask] = useState("");
+  // const [newTask, setNewTask] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

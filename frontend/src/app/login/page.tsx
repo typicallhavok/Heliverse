@@ -213,7 +213,7 @@ const Login = () => {
           </div>
 
           <div className="text-center text-sm text-muted">
-            <span>Don't have an account? </span>
+            <span>Don&apos;t have an account? </span>
             <a
               href="/register"
               className="text-primary hover:text-muted transition"
