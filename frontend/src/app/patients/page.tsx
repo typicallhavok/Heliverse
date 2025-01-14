@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import AddPatientModal from '@/components/AddPatientModal';
 
 type Patient = {
-	id: string;
+	id?: string;
 	name: string;
 	room: number;
 	bed: number;
@@ -36,23 +36,18 @@ export default function PatientsPage() {
 		fetchPatients();
 	}, []);
 
-	const handleAddPatient = (patientData: Patient) => {
-		const addPatient = async () => {
-			try {
-				const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patients`,
-					patientData,
-					{ withCredentials: true }
-				);
-				setPatients((prevPatients) => [...prevPatients, data]);
-				setShowForm(false);
-			} catch (error: unknown) {
-				console.error('Failed to add patient:', error);
-			}
-		};
-
-		addPatient();  // Call the async function inside
+	const handleAddPatient = async (patientData: Patient) => {
+		try {
+			const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patients`, 
+				patientData,
+				{ withCredentials: true }
+			);
+			setPatients([...patients, data]);
+			setShowForm(false);
+		} catch (error: unknown) {
+			console.error('Failed to add patient:', error);
+		}
 	};
-
 
 	if (loading) {
 		return (
@@ -79,7 +74,7 @@ export default function PatientsPage() {
 				>
 					+
 				</button>
-				<AddPatientModal
+				<AddPatientModal 
 					show={showForm}
 					onClose={() => setShowForm(false)}
 					onSubmit={handleAddPatient}
@@ -128,7 +123,7 @@ export default function PatientsPage() {
 					</div>
 				))}
 			</div>
-			<AddPatientModal
+			<AddPatientModal 
 				show={showForm}
 				onClose={() => setShowForm(false)}
 				onSubmit={handleAddPatient}
