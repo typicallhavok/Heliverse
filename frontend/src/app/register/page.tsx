@@ -32,9 +32,9 @@ const Register = () => {
       router.push("/dashboard");
     } catch (err: unknown) {
       if (isErrorWithMessage(err)) {
-        setError(err.error || "Login failed");
+        setError(err.error || "Registration failed");
       } else {
-        setError("Login failed");
+        setError("Registration failed");
       }
     } finally {
       setLoading(false);
