@@ -36,34 +36,34 @@ export default function PantryStaffDetails() {
     fetchStaffMember();
   }, [params.id]);
 
-  const handleAddTask = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTask.trim()) return;
+  // const handleAddTask = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!newTask.trim()) return;
 
-    try {
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}/tasks`,
-        { task: newTask },
-        { withCredentials: true }
-      );
-      setStaff(data);
-      setNewTask("");
-    } catch (error) {
-      console.error("Failed to add task:", error);
-    }
-  };
+  //   try {
+  //     const { data } = await axios.post(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}/tasks`,
+  //       { task: newTask },
+  //       { withCredentials: true }
+  //     );
+  //     setStaff(data);
+  //     setNewTask("");
+  //   } catch (error) {
+  //     console.error("Failed to add task:", error);
+  //   }
+  // };
 
-  const handleRemoveTask = async (taskIndex: number) => {
-    try {
-      const { data } = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}/tasks/${taskIndex}`,
-        { withCredentials: true }
-      );
-      setStaff(data);
-    } catch (error) {
-      console.error("Failed to remove task:", error);
-    }
-  };
+  // const handleRemoveTask = async (taskIndex: number) => {
+  //   try {
+  //     const { data } = await axios.delete(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}/pantry/staff/${params.id}/tasks/${taskIndex}`,
+  //       { withCredentials: true }
+  //     );
+  //     setStaff(data);
+  //   } catch (error) {
+  //     console.error("Failed to remove task:", error);
+  //   }
+  // };
 
   if (loading) {
     return (

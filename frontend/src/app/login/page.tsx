@@ -38,8 +38,8 @@ const Login = () => {
     return (
       typeof err === "object" &&
       err !== null &&
-      "error" in err &&
-      typeof (err as any).error === "string"
+      "error" in (err as { error?: unknown }) &&
+      typeof (err as { error: unknown }).error === "string"
     );
   }
 

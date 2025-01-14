@@ -25,7 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        // Check if user is logged in on mount
         checkAuth();
     }, []);
 
@@ -37,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(data.user);
         } catch (error) {
             setUser(null);
+            console.log(error);
         } finally {
             setLoading(false);
         }
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 withCredentials: true
             });
             setUser(null);
-            router.push('/');  // Redirect to home after successful logout
+            router.push('/');
         } catch (error) {
             console.error('Logout failed:', error);
         }
