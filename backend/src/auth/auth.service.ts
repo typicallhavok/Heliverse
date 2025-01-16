@@ -70,7 +70,6 @@ export class AuthService {
 
   async register(userData: any) {
     // Check if email exists in any user table
-    console.log('Registering user:', userData);
     const existingUser =
       (await this.prisma.pantryStaff.findUnique({
         where: { email: userData.email },
@@ -83,7 +82,6 @@ export class AuthService {
       }));
 
     if (existingUser) {
-      console.log('Existing user found:', existingUser);
       throw new ConflictException('Email already exists');
     }
 
@@ -155,7 +153,6 @@ export class AuthService {
         },
       };
     } catch (error) {
-      console.log('Create user error:', error);
       throw new ConflictException('Error creating user');
     }
   }
