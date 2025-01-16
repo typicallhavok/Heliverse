@@ -14,4 +14,9 @@ export class AppController {
   async ping() {
     return 'pong';
   }
+
+  @Get('health')
+  async health() {
+    return 'ok';
+  }
 }
