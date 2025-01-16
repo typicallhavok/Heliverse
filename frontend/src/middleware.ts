@@ -6,6 +6,8 @@ export function middleware(request: NextRequest) {
 	const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
 	const token = request.cookies.get("jwt");
 
+	console.log("token: ", token);
+
 	if (!isPublicPath && !token) {
 		return NextResponse.redirect(new URL("/login", request.url));
 	}
